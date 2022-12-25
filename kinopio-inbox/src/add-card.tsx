@@ -1,4 +1,4 @@
-import { Form, ActionPanel, Action, Toast, showToast, getPreferenceValues } from "@raycast/api";
+import { Form, ActionPanel, Action, Toast, showToast, getPreferenceValues, open } from "@raycast/api";
 import { useState, useRef } from "react";
 import got from "got";
 
@@ -58,16 +58,13 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
     }
   }
 
-  function resetTextarea() {
-
-  }
-
   return (
     <Form
       enableDrafts
       actions={
         <ActionPanel>
           <Action.SubmitForm onSubmit={handleSubmit} />
+          <Action.OpenInBrowser url="http://kinopio.club/inbox" />
         </ActionPanel>
       }
     >
@@ -86,7 +83,3 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
     </Form>
   );
 }
-
-// handle empty
-// X too long
-// server err (wrong api key)
