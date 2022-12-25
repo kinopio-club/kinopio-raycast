@@ -3,7 +3,7 @@
   "name": "kinopio-inbox",
   "title": "Kinopio Inbox",
   "description": "Add cards to your Kinopio inbox",
-  "icon": "command-icon.png",
+  "icon": "kinopio-icon.png",
   "author": "pirijan",
   "owner": "kinopio",
   "categories": [
@@ -12,10 +12,16 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "index",
+      "name": "add-card",
       "title": "Add Card",
       "description": "",
       "mode": "view"
+    },
+    {
+      "name": "open-inbox",
+      "title": "Open Inbox",
+      "description": "",
+      "mode": "no-view"
     }
   ],
   "preferences": [
