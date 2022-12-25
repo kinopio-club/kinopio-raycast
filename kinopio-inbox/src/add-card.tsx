@@ -2,8 +2,8 @@ import { Form, ActionPanel, Action, Toast, showToast, getPreferenceValues, open 
 import { useState, useRef } from "react";
 import got from "got";
 
-const cardLimit = 300
-const host = 'https://api.kinopio.club'
+const cardLimit = 300;
+const host = "https://api.kinopio.club";
 
 type Values = {
   name: string;
@@ -15,41 +15,41 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
   const textFieldRef = useRef<Form.TextField>(null);
 
   const preferences = getPreferenceValues<Preferences>();
-  console.log('🙈', preferences.apiKey);
+  console.log("🙈", preferences.apiKey);
 
   function validateName(value: string): boolean {
-    const characterLimitError = value.length > cardLimit
+    const characterLimitError = value.length > cardLimit;
     if (characterLimitError) {
-      setNameError(`Cards cannot be longer than ${cardLimit} characters`)
+      setNameError(`Cards cannot be longer than ${cardLimit} characters`);
     } else {
-      setNameError(undefined)     
+      setNameError(undefined);
     }
   }
 
   async function handleSubmit(values: Values) {
-    console.log('🎑', values);
+    console.log("🎑", values);
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: "Saving card",
     });
     try {
-      const url = `${host}/card/to-inbox`
+      const url = `${host}/card/to-inbox`;
       await got.post({
         url,
         headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'must-revalidate, no-store, no-cache, private',
-          'Authorization': preferences.apiKey          
+          "Content-Type": "application/json",
+          "Cache-Control": "must-revalidate, no-store, no-cache, private",
+          Authorization: preferences.apiKey,
         },
         json: { name: values.name },
-        responseType: "json"
+        responseType: "json",
       });
-      console.log('🐸')
-      textFieldRef.current?.reset()
+      console.log("🐸");
+      textFieldRef.current?.reset();
       toast.style = Toast.Style.Success;
       toast.title = "Saved card to your inbox";
     } catch (error) {
-      console.error('🚒', error)
+      console.error("🚒", error);
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to save card";
       if (error instanceof Error) {
@@ -69,11 +69,11 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
       }
     >
       <Form.TextArea
-        id="name" 
-        title="New Card" 
-        placeholder="Type text here, or paste a URL" 
+        id="name"
+        title="New Card"
+        placeholder="Type text here, or paste a URL"
         defaultValue={draftValues?.name}
-        autoFocus={true} 
+        autoFocus={true}
         enableMarkdown={true}
         onChange={validateName}
         error={nameError}
