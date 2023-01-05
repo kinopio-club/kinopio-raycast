@@ -10,10 +10,10 @@ import {
   Preferences,
 } from "@raycast/api";
 import { useState, useRef } from "react";
-import got from "got";
 
 const cardLimit = 300;
 const host = "https://api.kinopio.club";
+// const host = "http://kinopio.local:3000";
 
 type Values = {
   name: string;
@@ -25,7 +25,7 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
   const textFieldRef = useRef<Form.TextField>(null);
 
   const preferences = getPreferenceValues<Preferences>();
-  console.log("🙈", preferences.apiKey);
+  console.log("🙈 apiKey", preferences.apiKey);
 
   function validateName(value: string) {
     const characterLimitError = value.length > cardLimit;
@@ -43,26 +43,29 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
       title: "Saving card",
     });
     try {
+      let data = { name: values.name }
       const url = `${host}/card/to-inbox`;
-      await got.post({
-        url,
+      const response = await fetch(url, {
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "Cache-Control": "must-revalidate, no-store, no-cache, private",
           Authorization: `${preferences.apiKey}`,
         },
-        json: { name: values.name },
-        responseType: "json",
+        body: JSON.stringify(data)
       });
-      console.log("🐸");
+      data = await response.json()
+      console.log("🐸 response", url, response.status, data);
+      const errorStatus = [400, 401, 404, 500]
+      if (errorStatus.includes(response.status) || errorStatus.includes(data.status)) { throw data }
       textFieldRef.current?.reset();
       toast.style = Toast.Style.Success;
       toast.title = "Saved card to your inbox";
     } catch (error) {
-      console.error("🚒", error);
+      console.error("🚒 handleSubmit", error);
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to save card";
-      if (error instanceof Error) {
+      if (error.message) {
         toast.message = error.message;
       }
     }
