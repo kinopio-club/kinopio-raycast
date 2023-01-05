@@ -16,7 +16,8 @@ const host = "https://api.kinopio.club";
 // const host = "http://kinopio.local:3000";
 
 type Values = {
-  name: string;
+  name: string,
+  status: number
 };
 
 export default function Command(props: LaunchProps<{ draftValues: Values }>) {
@@ -43,7 +44,7 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
       title: "Saving card",
     });
     try {
-      let data = { name: values.name }
+      let data = { name: values.name, status: 200 }
       const url = `${host}/card/to-inbox`;
       const response = await fetch(url, {
         method: 'POST',
@@ -61,10 +62,11 @@ export default function Command(props: LaunchProps<{ draftValues: Values }>) {
       textFieldRef.current?.reset();
       toast.style = Toast.Style.Success;
       toast.title = "Saved card to your inbox";
-    } catch (error) {
+    } catch (error: any) {
       console.error("🚒 handleSubmit", error);
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to save card";
+      let message = error.message
       if (error.message) {
         toast.message = error.message;
       }
